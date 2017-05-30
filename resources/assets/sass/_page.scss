@@ -1,0 +1,12 @@
+a.glyphicon:hover, a.glyphicon:focus {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.table > thead > tr > th.operation {
+  min-width: 100px;
+}
+
+textarea {
+  min-height: 150px;
+}
