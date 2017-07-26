@@ -19,6 +19,7 @@
                             <th>Method</th>
                             <th>URL</th>
                             <th>Response Body</th>
+                            <th>Updated At</th>
                             <th class="operation">Operation</th>
                         </tr>
                         </thead>
@@ -28,6 +29,7 @@
                             <td>{{ $item['request_method'] }}</td>
                             <td>{{ $item['request_uri'] }}</td>
                             <td title="{{ $item['response_body'] }}">{{ str_limit($item['response_body'], 50, '...') }}</td>
+                            <td title="{{ $item['updated_at'] }}">{{ $item['updated_at'] }}</td>
                             <td>
                                 <a class="btn btn-default glyphicon glyphicon-eye-open" title="View" href="{{ route('mocks.show', ['id' => $item['id']]) }}"></a>
                                 <a class="btn btn-primary glyphicon glyphicon-edit" title="Edit" href="{{ route('mocks.edit', ['id' => $item['id']]) }}"></a>

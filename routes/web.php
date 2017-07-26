@@ -14,18 +14,7 @@ use App\MockRequest;
 use Illuminate\Support\Facades\Request;
 
 if (config('app.url') != Request::getHttpHost() && PHP_SAPI != 'cli') {
-    $response = MockRequest::select(['response_code', 'response_content_type', 'response_charset', 'response_headers', 'response_body'])
-        ->where('request_uri', Request::url())
-        ->where('request_method', Request::method())
-        ->where('enable', 'Y')
-        ->first();
-    
-    if (!empty($response)) {
-        http_response_code($response->response_code);
-        header("Content-type:{$response->response_content_type};charset={$response->response_charset}");
-        echo $response->response_body;
-        exit();
-    }
+    Route::any(Request::getRequestUri(), 'MockController@all');
 }
 
 Route::get('/', function () {
@@ -34,7 +23,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::resource('mocks', 'MockRequestController');
+Route::resource('mocks', 'MockResponseController');
 
-Route::post('mocks/{mock}/enable', 'MockRequestController@enable')->name('mocks.enable');
-Route::post('mocks/{mock}/disable', 'MockRequestController@disable')->name('mocks.disable');
+Route::post('mocks/{mock}/enable', 'MockResponseController@enable')->name('mocks.enable');
+Route::post('mocks/{mock}/disable', 'MockResponseController@disable')->name('mocks.disable');

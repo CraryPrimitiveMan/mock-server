@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\MockRequest;
+use App\MockResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class MockRequestController extends Controller
+class MockResponseController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,8 +24,9 @@ class MockRequestController extends Controller
      */
     public function index()
     {
-        $mockRequqets = MockRequest::all()->all();
-        return view('request.index', ['data' => $mockRequqets]);
+        $mockRequqets = MockResponse::orderBy('created_at', 'desc')
+            ->get();
+        return view('response.index', ['data' => $mockRequqets]);
     }
 
     /**
@@ -35,7 +36,7 @@ class MockRequestController extends Controller
      */
     public function create()
     {
-        return view('request.create');
+        return view('response.create');
     }
 
     /**
@@ -53,7 +54,14 @@ class MockRequestController extends Controller
         $data['domain'] = $parsedUrl['host'];
         $data['path'] = $parsedUrl['path'];
         $data['response_headers'] = '';
-        $mockRequest = new MockRequest();
+        $isDomainRegistered = MockResponse::where('domain', $data['domain'])
+            ->where('user_id', '!=', $data['user_id'])
+            ->exists();
+        if ($isDomainRegistered) {
+            $request->flash();
+            return redirect()->route('mocks.create')->with('error', 'Domain has been registered!');
+        }
+        $mockRequest = new MockResponse();
         $mockRequest->fill($data);
         $mockRequest->save();
         return redirect()->route('mocks.index')->with('message', 'Create successfully!');
@@ -67,8 +75,8 @@ class MockRequestController extends Controller
      */
     public function show($id)
     {
-        $mockRequest = MockRequest::find($id);
-        return view('request.show', $mockRequest->toArray());
+        $mockRequest = MockResponse::find($id);
+        return view('response.show', $mockRequest->toArray());
     }
 
     /**
@@ -79,8 +87,8 @@ class MockRequestController extends Controller
      */
     public function edit($id)
     {
-        $mockRequest = MockRequest::find($id);
-        return view('request.edit', $mockRequest->toArray());
+        $mockRequest = MockResponse::find($id);
+        return view('response.edit', $mockRequest->toArray());
     }
 
     /**
@@ -98,7 +106,14 @@ class MockRequestController extends Controller
         $data['domain'] = $parsedUrl['host'];
         $data['path'] = $parsedUrl['path'];
         $data['response_headers'] = '';
-        $mockRequest = MockRequest::find($id);
+        $isDomainRegistered = MockResponse::where('domain', $data['domain'])
+            ->where('user_id', '!=', Auth::id())
+            ->exists();
+        if ($isDomainRegistered) {
+            $request->flash();
+            return redirect()->route('mocks.edit')->with('error', 'Domain has been registered!');
+        }
+        $mockRequest = MockResponse::find($id);
         $mockRequest->fill($data);
         $mockRequest->save();
         return redirect()->route('mocks.index')->with('message', 'Update successfully!');
@@ -112,7 +127,7 @@ class MockRequestController extends Controller
      */
     public function destroy($id)
     {
-        $mockRequest = MockRequest::find($id);
+        $mockRequest = MockResponse::find($id);
         $mockRequest->delete();
         return redirect()->route('mocks.index')->with('message', 'Delete successfully!');
     }
@@ -124,7 +139,7 @@ class MockRequestController extends Controller
      */
     public function enable($id)
     {
-        $mockRequest = MockRequest::find($id);
+        $mockRequest = MockResponse::find($id);
         $mockRequest->enable = 'Y';
         $mockRequest->save();
         return redirect()->route('mocks.index')->with('message', 'Enable successfully!');
@@ -137,7 +152,7 @@ class MockRequestController extends Controller
      */
     public function disable($id)
     {
-        $mockRequest = MockRequest::find($id);
+        $mockRequest = MockResponse::find($id);
         $mockRequest->enable = 'N';
         $mockRequest->save();
         return redirect()->route('mocks.index')->with('message', 'Enable successfully!');

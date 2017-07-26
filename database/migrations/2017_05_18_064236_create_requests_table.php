@@ -29,7 +29,7 @@ class CreateRequestsTable extends Migration
         ];
         $charsets = ['UTF-8', 'ISO-8859-1', 'UTF-16'];
         $httpScheme = ['http', 'https'];
-        Schema::create('mock_requests', function (Blueprint $table) use ($methods, $contentTypes, $charsets, $httpScheme) {
+        Schema::create('mock_responses', function (Blueprint $table) use ($methods, $contentTypes, $charsets, $httpScheme) {
             $table->increments('id');
             $table->integer('user_id');
             $table->enum('scheme', $httpScheme)->default('http');
@@ -54,6 +54,6 @@ class CreateRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mock_requests');
+        Schema::dropIfExists('mock_responses');
     }
 }

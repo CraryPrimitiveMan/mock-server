@@ -27,10 +27,17 @@
                             </div>
 
                             <div class="form-group clearfix">
-                                <label for="response_code" class="col-md-2 control-label">Response Content Type</label>
+                                <label for="response_content_type" class="col-md-2 control-label">Response Content Type</label>
 
                                 <div class="col-md-8">
                                     {{ $response_content_type }}
+                                </div>
+                            </div>
+
+                            <div class="form-group clearfix">
+                                <label for="response_charset" class="col-md-2 control-label">Response Charset</label>
+
+                                <div class="col-md-8">
                                     {{ $response_charset }}
                                 </div>
                             </div>
